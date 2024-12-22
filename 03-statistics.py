@@ -13,6 +13,7 @@ from stats import (
     get_server_player_counts,
     get_server_variety_ranking,
     get_total_playtime,
+    get_total_advancements,
 )
 from stats.common import load_dataframes
 
@@ -110,6 +111,10 @@ def main():
     print("\nMost Achievements Earned:")
     for rank in advancement_ranking[:10]:
         print(f"{rank['player_name']}: {rank['advancements']} advancements")
+
+    # Generate total advancements count
+    total_advancements = get_total_advancements(dfs)
+    print(f"\nTotal Advancements Earned: {total_advancements['total_advancements']}")
 
     # Generate server player counts
     server_players = get_server_player_counts(dfs)

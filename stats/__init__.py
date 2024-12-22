@@ -1,4 +1,4 @@
-from .advancement_stats import get_advancement_ranking
+from .advancement_stats import get_advancement_ranking, get_total_advancements
 from .chat_stats import (
     get_chat_ranking,
     get_chat_rate_ranking,
@@ -34,4 +34,5 @@ __all__ = [
     "get_active_players",
     "get_server_player_counts",
     "get_total_playtime",
+    "get_total_advancements",
 ]
