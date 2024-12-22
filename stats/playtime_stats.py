@@ -102,3 +102,17 @@ def get_server_player_counts(dfs: dict[str, pd.DataFrame]) -> list[dict]:
     ]
 
     return result
+
+
+def get_total_playtime(dfs: dict[str, pd.DataFrame]) -> dict:
+    """Calculate total playtime across all players"""
+    sessions_df = dfs["sessions"]
+
+    # Sum up all playtime and convert to hours
+    total_seconds = sessions_df["play_time"].sum()
+    total_hours = total_seconds / 3600
+
+    return {
+        "total_hours": round(total_hours, 1),
+        "total_days": round(total_hours / 24, 1),
+    }

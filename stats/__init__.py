@@ -16,6 +16,7 @@ from .playtime_stats import (
     get_playtime_ranking,
     get_server_player_counts,
     get_server_variety_ranking,
+    get_total_playtime,
 )
 
 __all__ = [
@@ -32,4 +33,5 @@ __all__ = [
     "get_server_variety_ranking",
     "get_active_players",
     "get_server_player_counts",
+    "get_total_playtime",
 ]

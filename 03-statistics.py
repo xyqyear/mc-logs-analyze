@@ -12,6 +12,7 @@ from stats import (
     get_server_chat_rate_ranking,
     get_server_player_counts,
     get_server_variety_ranking,
+    get_total_playtime,
 )
 from stats.common import load_dataframes
 
@@ -19,6 +20,11 @@ from stats.common import load_dataframes
 def main():
     """Main function to generate all statistics"""
     dfs = load_dataframes()
+
+    # Generate total playtime
+    total_play = get_total_playtime(dfs)
+    print("\nTotal Server Playtime:")
+    print(f"{total_play['total_hours']} hours ({total_play['total_days']} days)")
 
     # Generate active players list
     active_players = get_active_players(dfs)
