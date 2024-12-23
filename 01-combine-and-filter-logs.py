@@ -1,12 +1,15 @@
 import gzip
 import os
 import re
+from collections import defaultdict
+from datetime import datetime
 from pathlib import Path
 
 from tqdm import tqdm
 
 # Regex patterns
 SERVER_DONE_PATTERN = r": Done \(\d.*help"
+TIME_PATTERN = r"^\[[^\[]*(\d{2}:\d{2}:\d{2}).*?\]"
 PLAYER_UUID_MAPPING_PATTERN = (
     r"UUID of player (\S+) is (\S{8}-\S{4}-\S{4}-\S{4}-\S{12})"
 )
@@ -22,7 +25,23 @@ def parse_log_filename(filename: Path) -> tuple[str, int] | None:
     if not match:
         return None
     date_str, index = match.groups()
-    return (date_str, -int(index))
+    return (date_str, int(index))
+
+
+def get_first_timestamp(file: Path) -> datetime | None:
+    """Get the first timestamp from a log file"""
+    encodings = ["utf-8", "latin1", "cp1252"]
+
+    for encoding in encodings:
+        try:
+            with gzip.open(file, "rt", encoding=encoding) as f:
+                for line in f:
+                    match = re.search(TIME_PATTERN, line)
+                    if match:
+                        return datetime.strptime(match.group(1), "%H:%M:%S")
+        except UnicodeDecodeError:
+            continue
+    return None
 
 
 def get_log_files(server: str) -> list[Path]:
@@ -30,13 +49,30 @@ def get_log_files(server: str) -> list[Path]:
     if not log_dir.exists():
         return []
 
-    log_files = []
+    # Group files by date
+    files_by_date = defaultdict(list)
     for file in log_dir.glob("*.log.gz"):
         parsed = parse_log_filename(file)
         if parsed:
-            log_files.append((file, parsed))
+            date_str, _ = parsed
+            files_by_date[date_str].append(file)
 
-    return [file for file, _ in sorted(log_files, key=lambda x: x[1])]
+    # Sort each day's files by their first timestamp
+    sorted_files = []
+    for date_files in files_by_date.values():
+        # Get first timestamp for each file
+        files_with_time = []
+        for file in date_files:
+            timestamp = get_first_timestamp(file)
+            if timestamp:
+                files_with_time.append((file, timestamp))
+
+        # Sort by timestamp and add to result
+        sorted_files.extend(
+            file for file, _ in sorted(files_with_time, key=lambda x: x[1])
+        )
+
+    return sorted_files
 
 
 def is_relevant_line(line: str) -> bool:
