@@ -152,7 +152,7 @@ def main():
     # Generate daily playtime statistics
     daily_playtime = get_daily_playtime(dfs)
     print("\nDaily Playtime Sample (first 5 days):")
-    for day in daily_playtime[:]:
+    for day in daily_playtime[:5]:
         print(f"{day['date']}: {day['play_hours']} hours")
 
 
