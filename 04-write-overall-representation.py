@@ -9,6 +9,7 @@ from overall_frames import (
     time_distribution,
     timeline,
     total_playtime,
+    total_deaths,  # Add total_deaths
     variety_ranking,
 )
 from stats.common import load_dataframes
@@ -46,6 +47,7 @@ def main():
 
     # Update peak players to only write frame
     peak_players.write_frame(dfs, FRAMES_DIR)
+    total_deaths.write_frame(dfs, FRAMES_DIR)  # Add this line
 
 
 if __name__ == "__main__":
