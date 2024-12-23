@@ -2,9 +2,10 @@ import os
 
 from overall_frames import (
     active_players,
+    playtime_ranking,  # Add this import
     server_players,
     timeline,
-    total_playtime,  # Add this import
+    total_playtime,
     variety_ranking,
 )
 from stats.common import load_dataframes
@@ -32,7 +33,8 @@ def main():
     active_players.write_frame(dfs, FRAMES_DIR)
     server_players.write_frame(dfs, FRAMES_DIR)
     variety_ranking.write_frame(dfs, FRAMES_DIR)
-    total_playtime.write_frame(dfs, FRAMES_DIR)  # Add this line
+    total_playtime.write_frame(dfs, FRAMES_DIR)
+    playtime_ranking.write_frame(dfs, FRAMES_DIR)  # Add this line
 
 
 if __name__ == "__main__":
