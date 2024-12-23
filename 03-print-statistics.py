@@ -13,7 +13,7 @@ from stats import (
     get_pvp_kill_ranking,
     get_server_chat_ranking,
     get_server_chat_rate_ranking,
-    get_server_player_counts,
+    get_server_player_list,  # Update this line
     get_server_timeline,
     get_server_variety_ranking,
     get_total_advancements,
@@ -136,10 +136,11 @@ def main():
     print(f"\nTotal Deaths: {total_deaths['total_deaths']}")
 
     # Generate server player counts
-    server_players = get_server_player_counts(dfs)
+    server_players = get_server_player_list(dfs)
     print("\nPlayers per Server:")
     for stat in server_players:
-        print(f"{stat['server_name']}: {stat['player_count']} players")
+        print(f"\n{stat['server_name']}: {stat['player_count']} players")
+        print("Players:", ", ".join(stat["player_list"]))
 
     # Generate peak concurrent players
     peak_concurrent = get_peak_concurrent_players(dfs)

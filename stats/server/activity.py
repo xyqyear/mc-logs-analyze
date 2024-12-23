@@ -98,27 +98,36 @@ def get_server_timeline(
     return result
 
 
-def get_server_player_counts(dfs: dict[str, pd.DataFrame]) -> list[dict]:
-    """Get count of unique players for each server"""
+def get_server_player_list(dfs: dict[str, pd.DataFrame]) -> list[dict]:
+    """Get list of unique players for each server with their names"""
     sessions_df = dfs["sessions"]
+    names_df = dfs["player_names"]
 
-    # Count unique players (UUIDs) per server
-    player_counts = (
-        sessions_df.groupby("server_name")["uuid"]
-        .nunique()
-        .reset_index(name="player_count")
-    )
+    # Get unique player-server combinations
+    server_players = sessions_df.groupby("server_name")["uuid"].unique().reset_index()
+
+    # Process each server
+    result = []
+    for _, row in server_players.iterrows():
+        # Get player names for this server's UUIDs
+        server_uuids = row["uuid"]
+        player_names = sorted(
+            names_df[names_df["uuid"].isin(server_uuids)]["player_name"].unique()
+        )
+
+        result.append(
+            {
+                "server_name": row["server_name"],
+                "player_count": len(player_names),
+                "player_list": player_names,
+            }
+        )
 
     # Sort by player count descending
-    player_counts = player_counts.sort_values("player_count", ascending=False)
-
-    # Convert to list of dicts
-    result = [
-        {
-            "server_name": row["server_name"],
-            "player_count": int(row["player_count"]),
-        }
-        for _, row in player_counts.iterrows()
-    ]
+    result.sort(key=lambda x: x["player_count"], reverse=True)
 
     return result
+
+
+# Remove or comment out the old function
+# def get_server_player_counts...
