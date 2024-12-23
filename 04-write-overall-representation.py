@@ -3,12 +3,13 @@ import os
 from overall_frames import (
     active_players,
     daily_playtime,
-    dangerous_servers,  # Add this import
+    dangerous_servers,
     death_ranking,
     death_rate_ranking,
     peak_players,
     playtime_ranking,
     server_players,
+    server_playtime,  # Add this import
     time_distribution,
     timeline,
     total_deaths,
@@ -41,6 +42,7 @@ def main():
     server_players.write_frame(dfs, FRAMES_DIR)
     variety_ranking.write_frame(dfs, FRAMES_DIR)
     total_playtime.write_frame(dfs, FRAMES_DIR)
+    server_playtime.write_frame(dfs, FRAMES_DIR)  # Add this line
     playtime_ranking.write_frame(dfs, FRAMES_DIR)
     daily_playtime.create_figure(dfs, FIGURES_DIR)
     daily_playtime.write_frame(FRAMES_DIR)
