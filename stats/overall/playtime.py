@@ -90,3 +90,67 @@ def get_server_variety_ranking(dfs: dict[str, pd.DataFrame]) -> list[dict]:
     ]
 
     return result
+
+
+def get_daily_playtime(dfs: dict[str, pd.DataFrame]) -> list[dict]:
+    """Calculate total playtime for each day of the year in UTC+8, handling cross-day sessions"""
+    sessions_df = dfs["sessions"]
+
+    # Convert timestamps to pandas timestamps in UTC+8
+    sessions_df["start_time"] = pd.to_datetime(
+        sessions_df["join_timestamp"], unit="s", utc=True
+    ).dt.tz_convert("Asia/Shanghai")
+    sessions_df["end_time"] = sessions_df["start_time"] + pd.to_timedelta(
+        sessions_df["play_time"], unit="s"
+    )
+
+    # Initialize list to store daily segments
+    daily_segments = []
+
+    for _, session in sessions_df.iterrows():
+        start = session["start_time"]
+        end = session["end_time"]
+        current = start.normalize()  # Get start of day
+
+        while current < end:
+            next_day = current + pd.Timedelta(days=1)
+            segment_end = min(end, next_day)
+            segment_duration = (segment_end - max(start, current)).total_seconds()
+
+            if segment_duration > 0:
+                daily_segments.append(
+                    {"date": current.date(), "play_time": segment_duration}
+                )
+
+            current = next_day
+
+    # Convert segments to DataFrame and group by date
+    segments_df = pd.DataFrame(daily_segments)
+    if len(segments_df) > 0:
+        daily_play = segments_df.groupby("date")["play_time"].sum().reset_index()
+        daily_play["play_hours"] = daily_play["play_time"] / 3600
+
+        # Ensure all days between first and last session are included
+        start_date = daily_play["date"].min()
+        end_date = daily_play["date"].max()
+        all_dates = pd.date_range(start=start_date, end=end_date, freq="D").date
+
+        # Create complete date index with 0 hours for missing days
+        daily_hours = pd.DataFrame({"date": all_dates})
+        daily_hours = daily_hours.merge(
+            daily_play[["date", "play_hours"]], on="date", how="left"
+        ).fillna(0)
+    else:
+        # Handle case with no valid sessions
+        daily_hours = pd.DataFrame(columns=["date", "play_hours"])
+
+    # Convert to list of dicts
+    result = [
+        {
+            "date": row["date"].isoformat(),
+            "play_hours": round(row["play_hours"], 1),
+        }
+        for _, row in daily_hours.iterrows()
+    ]
+
+    return result

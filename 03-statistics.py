@@ -3,6 +3,7 @@ from stats import (
     get_advancement_ranking,
     get_chat_ranking,
     get_chat_rate_ranking,
+    get_daily_playtime,  # Add this line
     get_dangerous_server_ranking,
     get_death_ranking,
     get_death_rate_ranking,
@@ -16,10 +17,9 @@ from stats import (
     get_server_variety_ranking,
     get_total_advancements,
     get_total_deaths,
-    get_total_playtime,
     get_total_messages,  # Add this line
+    get_total_playtime,
 )
-
 from stats.common import load_dataframes
 
 
@@ -148,6 +148,12 @@ def main():
     # Calculate total messages sent
     total_messages = get_total_messages(dfs)
     print(f"\nTotal Messages Sent: {total_messages['total_messages']}")
+
+    # Generate daily playtime statistics
+    daily_playtime = get_daily_playtime(dfs)
+    print("\nDaily Playtime Sample (first 5 days):")
+    for day in daily_playtime[:]:
+        print(f"{day['date']}: {day['play_hours']} hours")
 
 
 if __name__ == "__main__":

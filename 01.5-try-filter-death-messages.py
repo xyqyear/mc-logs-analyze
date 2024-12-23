@@ -3,8 +3,8 @@ from pathlib import Path
 from typing import Iterator, Set
 
 # Patterns
-PLAYER_JOIN_PATTERN = r"\]: (\S+)\[.* logged in with entity"
-PLAYER_QUIT_PATTERN = r"\]: (\S+) left the game"
+PLAYER_JOIN_PATTERN = r"(\S+?)\[\S+\] logged in with entity id \d+ at"
+PLAYER_QUIT_PATTERN = r"(\S+?) lost connection: .*"
 DEATH_MESSAGE_BASE = r"\]: (\S+) (.*)$"
 
 # Patterns to exclude

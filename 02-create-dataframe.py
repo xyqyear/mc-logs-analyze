@@ -11,8 +11,8 @@ from tqdm import tqdm
 # Constants and patterns
 TIME_PATTERN = r"^(\d{4}-\d{2}-\d{2})-\d\.log\.gz: \[[^\[]*(\d{2}:\d{2}:\d{2}).*?\]"
 SERVER_DONE_PATTERN = r": Done \(\d.*help"
-PLAYER_JOIN_PATTERN = r"(\S+)\[.*?\] logged in with entity id \d+ at"
-PLAYER_QUIT_PATTERN = r"(\S+) lost connection: (.*)"
+PLAYER_JOIN_PATTERN = r"(\S+?)\[\S+\] logged in with entity id \d+ at"
+PLAYER_QUIT_PATTERN = r"(\S+?) lost connection: (.*)"
 DEATH_MESSAGE_BASE = r"\]: (\S+) (.*)$"  # Updated death pattern
 PLAYER_CHAT_PATTERN = r": (\[Not Secure\] )?<(\S+)> (.*)"
 

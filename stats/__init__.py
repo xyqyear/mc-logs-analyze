@@ -2,7 +2,7 @@ from .overall.advancement import get_advancement_ranking, get_total_advancements
 from .overall.chat import (
     get_chat_ranking,
     get_chat_rate_ranking,
-    get_total_messages,  # Add this line
+    get_total_messages,
 )
 from .overall.deaths import (
     get_death_ranking,
@@ -12,6 +12,7 @@ from .overall.deaths import (
 )
 from .overall.playtime import (
     get_active_players,
+    get_daily_playtime,  # Add this line
     get_playtime_ranking,
     get_server_variety_ranking,
     get_total_playtime,
@@ -32,7 +33,7 @@ __all__ = [
     "get_chat_rate_ranking",
     "get_server_chat_ranking",
     "get_server_chat_rate_ranking",
-    "get_total_messages",  # Add this line
+    "get_total_messages",
     "get_pvp_kill_ranking",
     "get_advancement_ranking",
     "get_playtime_ranking",
@@ -44,4 +45,5 @@ __all__ = [
     "get_peak_concurrent_players",
     "get_server_timeline",
     "get_total_deaths",
+    "get_daily_playtime",  # Add this line
 ]
