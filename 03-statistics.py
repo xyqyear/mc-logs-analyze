@@ -19,6 +19,7 @@ from stats import (
     get_total_deaths,
     get_total_messages,  # Add this line
     get_total_playtime,
+    get_weekday_playtime,  # Add this line
 )
 from stats.common import load_dataframes
 
@@ -154,6 +155,12 @@ def main():
     print("\nDaily Playtime Sample (first 5 days):")
     for day in daily_playtime[:5]:
         print(f"{day['date']}: {day['play_hours']} hours")
+
+    # Generate weekday playtime statistics
+    weekday_playtime = get_weekday_playtime(dfs)
+    print("\nPlaytime by Day of Week:")
+    for day in weekday_playtime:
+        print(f"{day['weekday']}: {day['play_hours']} hours")
 
 
 if __name__ == "__main__":
