@@ -4,6 +4,7 @@ from overall_frames import (
     active_players,
     daily_playtime,
     death_ranking,  # Add death_ranking
+    death_rate_ranking,  # Add this import
     peak_players,
     playtime_ranking,
     server_players,
@@ -50,6 +51,7 @@ def main():
     peak_players.write_frame(dfs, FRAMES_DIR)
     total_deaths.write_frame(dfs, FRAMES_DIR)  # Add this line
     death_ranking.write_frame(dfs, FRAMES_DIR)  # Add this line
+    death_rate_ranking.write_frame(dfs, FRAMES_DIR)  # Add this line
 
 
 if __name__ == "__main__":
