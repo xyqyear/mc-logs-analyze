@@ -14,6 +14,8 @@ from stats import (
     get_server_variety_ranking,
     get_total_playtime,
     get_total_advancements,
+    get_peak_concurrent_players,
+    get_server_timeline,
 )
 from stats.common import load_dataframes
 
@@ -21,6 +23,12 @@ from stats.common import load_dataframes
 def main():
     """Main function to generate all statistics"""
     dfs = load_dataframes()
+
+    # Generate server timeline
+    timeline = get_server_timeline(dfs)
+    print("\nServer Timeline:")
+    for server in timeline:
+        print(f"{server['server_name']}: created at {server['created_at']}")
 
     # Generate total playtime
     total_play = get_total_playtime(dfs)
@@ -121,6 +129,14 @@ def main():
     print("\nPlayers per Server:")
     for stat in server_players:
         print(f"{stat['server_name']}: {stat['player_count']} players")
+
+    # Generate peak concurrent players
+    peak_concurrent = get_peak_concurrent_players(dfs)
+    print("\nPeak Concurrent Players by Server:")
+    for stat in peak_concurrent:
+        print(f"\n{stat['server_name']}:")
+        print(f"Peak: {stat['peak_players']} players at {stat['peak_time']}")
+        print("Players online:", ", ".join(stat["player_list"]))
 
 
 if __name__ == "__main__":
