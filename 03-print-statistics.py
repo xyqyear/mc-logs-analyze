@@ -14,6 +14,7 @@ from stats import (
     get_server_chat_ranking,
     get_server_chat_rate_ranking,
     get_server_player_list,  # Update this line
+    get_server_playtime_ranking,  # Add this import
     get_server_timeline,
     get_server_variety_ranking,
     get_total_advancements,
@@ -171,6 +172,15 @@ def main():
     print("\nPlaytime by Hour of Day:")
     for hour in hourly_playtime:
         print(f"{hour['hour']}: {hour['play_hours']} hours")
+
+    # Generate server playtime rankings
+    server_playtime = get_server_playtime_ranking(dfs)
+    print("\n每个服务器总游玩时长排名:")
+    for rank in server_playtime:
+        print(
+            f"{rank['server_name']}: {rank['play_hours']} hours "
+            f"({rank['play_days']} days)"
+        )
 
 
 if __name__ == "__main__":

@@ -298,3 +298,27 @@ def get_hourly_playtime(dfs: dict[str, pd.DataFrame]) -> list[dict]:
     ]
 
     return result
+
+
+def get_server_playtime_ranking(dfs: dict[str, pd.DataFrame]) -> list[dict]:
+    """Calculate server rankings by total play time"""
+    sessions_df = dfs["sessions"]
+
+    # Calculate total play time in hours per server
+    play_time = sessions_df.groupby("server_name")["play_time"].sum().reset_index()
+    play_time["play_hours"] = play_time["play_time"] / 3600
+
+    # Sort by play time descending
+    play_time = play_time.sort_values("play_hours", ascending=False)
+
+    # Convert to list of dicts with rounded values
+    result = [
+        {
+            "server_name": row["server_name"],
+            "play_hours": round(row["play_hours"], 1),
+            "play_days": round(row["play_hours"] / 24, 1),
+        }
+        for _, row in play_time.iterrows()
+    ]
+
+    return result
