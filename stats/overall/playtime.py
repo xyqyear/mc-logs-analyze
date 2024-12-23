@@ -26,6 +26,11 @@ def get_active_players(dfs: dict[str, pd.DataFrame]) -> list[dict]:
     # Get player names for active UUIDs
     active_players = names_df[names_df["uuid"].isin(active_uuids)]
 
+    # Remove duplicate names (keep first occurrence)
+    active_players = active_players.drop_duplicates(
+        subset=["player_name"], keep="first"
+    )
+
     # Sort by player name
     active_players = active_players.sort_values("player_name")
 
