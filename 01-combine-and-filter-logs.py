@@ -4,6 +4,7 @@ import re
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
+from typing import Iterator, TypeVar
 
 from tqdm import tqdm
 
@@ -19,6 +20,28 @@ PLAYER_UUID_MAPPING_PATTERN_ALT = (
 
 player_names: set[str] = set()
 
+T = TypeVar("T")
+
+
+def read_gzipped_file(file: Path) -> Iterator[str]:
+    """Read a gzipped file with multiple encodings and yield lines
+
+    Args:
+        file: Path to gzipped file
+
+    Yields:
+        Each line from the file
+    """
+    encodings = ["utf-8", "latin1", "cp1252"]
+    for encoding in encodings:
+        try:
+            with gzip.open(file, "rt", encoding=encoding) as f:
+                yield from f
+            return  # If we get here, we successfully read the file
+        except UnicodeDecodeError:
+            continue
+    print(f"Warning: Could not read {file} with any encoding")
+
 
 def parse_log_filename(filename: Path) -> tuple[str, int] | None:
     match = re.match(r"(\d{4}-\d{2}-\d{2})-(\d+)\.log\.gz$", filename.name)
@@ -30,17 +53,13 @@ def parse_log_filename(filename: Path) -> tuple[str, int] | None:
 
 def get_first_timestamp(file: Path) -> datetime | None:
     """Get the first timestamp from a log file"""
-    encodings = ["utf-8", "latin1", "cp1252"]
-
-    for encoding in encodings:
-        try:
-            with gzip.open(file, "rt", encoding=encoding) as f:
-                for line in f:
-                    match = re.search(TIME_PATTERN, line)
-                    if match:
-                        return datetime.strptime(match.group(1), "%H:%M:%S")
-        except UnicodeDecodeError:
-            continue
+    for line in read_gzipped_file(file):
+        match = re.search(TIME_PATTERN, line)
+        if match:
+            try:
+                return datetime.strptime(match.group(1), "%H:%M:%S")
+            except ValueError:
+                continue
     return None
 
 
@@ -93,20 +112,13 @@ def is_relevant_line(line: str) -> bool:
     return any(player in line for player in player_names)
 
 
-def read_and_filter_log_file(file: Path) -> list[str]:
-    encodings = ["utf-8", "latin1", "cp1252"]
-    for encoding in encodings:
-        try:
-            with gzip.open(file, "rt", encoding=encoding) as f:
-                return [
-                    f"{file.name}: {line}"
-                    for line in f.readlines()
-                    if is_relevant_line(line)
-                ]
-        except UnicodeDecodeError:
-            continue
-    print(f"Warning: Could not read {file} with any encoding")
-    return []
+def read_and_filter_log_file(file: Path) -> Iterator[str]:
+    """Read and filter log lines, yielding only relevant ones"""
+    return (
+        f"{file.name}: {line}"
+        for line in read_gzipped_file(file)
+        if is_relevant_line(line)
+    )
 
 
 def process_server(server: str) -> None:
@@ -119,9 +131,9 @@ def process_server(server: str) -> None:
 
     with open(output_file, "w", encoding="utf-8") as outf:
         for log_file in tqdm(log_files, desc=f"Processing {server} logs"):
-            filtered_lines = read_and_filter_log_file(log_file)
-            total_lines += len(filtered_lines)
-            outf.writelines(filtered_lines)
+            for line in read_and_filter_log_file(log_file):
+                outf.write(line)
+                total_lines += 1
 
     print(f"Found {len(player_names)} players in {server}: {player_names}")
     print(f"Wrote {total_lines} relevant lines for {server}")
