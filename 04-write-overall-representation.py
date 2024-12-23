@@ -8,8 +8,9 @@ from overall_frames import (
     death_rate_ranking,
     peak_players,
     playtime_ranking,
+    pvp_ranking,  # Add this import
     server_players,
-    server_playtime,  # Add this import
+    server_playtime,
     time_distribution,
     timeline,
     total_deaths,
@@ -56,6 +57,7 @@ def main():
     death_ranking.write_frame(dfs, FRAMES_DIR)
     death_rate_ranking.write_frame(dfs, FRAMES_DIR)
     dangerous_servers.write_frame(dfs, FRAMES_DIR)  # Add this line
+    pvp_ranking.write_frame(dfs, FRAMES_DIR)  # Add this line
 
 
 if __name__ == "__main__":
