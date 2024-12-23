@@ -6,16 +6,17 @@ from stats import (
     get_dangerous_server_ranking,
     get_death_ranking,
     get_death_rate_ranking,
+    get_peak_concurrent_players,
     get_playtime_ranking,
     get_pvp_kill_ranking,
     get_server_chat_ranking,
     get_server_chat_rate_ranking,
     get_server_player_counts,
-    get_server_variety_ranking,
-    get_total_playtime,
-    get_total_advancements,
-    get_peak_concurrent_players,
     get_server_timeline,
+    get_server_variety_ranking,
+    get_total_advancements,
+    get_total_deaths,
+    get_total_playtime,
 )
 from stats.common import load_dataframes
 
@@ -123,6 +124,10 @@ def main():
     # Generate total advancements count
     total_advancements = get_total_advancements(dfs)
     print(f"\nTotal Advancements Earned: {total_advancements['total_advancements']}")
+
+    # Generate total deaths count
+    total_deaths = get_total_deaths(dfs)
+    print(f"\nTotal Deaths: {total_deaths['total_deaths']}")
 
     # Generate server player counts
     server_players = get_server_player_counts(dfs)
