@@ -2,7 +2,8 @@ import os
 
 from overall_frames import (
     active_players,
-    playtime_ranking,  # Add this import
+    daily_playtime,  # Add this import
+    playtime_ranking,
     server_players,
     timeline,
     total_playtime,
@@ -34,7 +35,11 @@ def main():
     server_players.write_frame(dfs, FRAMES_DIR)
     variety_ranking.write_frame(dfs, FRAMES_DIR)
     total_playtime.write_frame(dfs, FRAMES_DIR)
-    playtime_ranking.write_frame(dfs, FRAMES_DIR)  # Add this line
+    playtime_ranking.write_frame(dfs, FRAMES_DIR)
+
+    # Add daily playtime visualization
+    daily_playtime.create_figure(dfs, FIGURES_DIR)
+    daily_playtime.write_frame(FRAMES_DIR)
 
 
 if __name__ == "__main__":
