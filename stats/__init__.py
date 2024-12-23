@@ -21,7 +21,7 @@ from .overall.playtime import (
 )
 from .server.activity import (
     get_peak_concurrent_players,
-    get_server_player_counts,
+    get_server_player_list,
     get_server_timeline,
 )
 from .server.chat import get_server_chat_ranking, get_server_chat_rate_ranking
@@ -41,7 +41,7 @@ __all__ = [
     "get_playtime_ranking",
     "get_server_variety_ranking",
     "get_active_players",
-    "get_server_player_counts",
+    "get_server_player_list",
     "get_total_playtime",
     "get_total_advancements",
     "get_peak_concurrent_players",
