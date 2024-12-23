@@ -13,10 +13,11 @@ from .overall.deaths import (
 from .overall.playtime import (
     get_active_players,
     get_daily_playtime,
+    get_hourly_playtime,  # Add this line
     get_playtime_ranking,
     get_server_variety_ranking,
     get_total_playtime,
-    get_weekday_playtime,  # Add this line
+    get_weekday_playtime,
 )
 from .server.activity import (
     get_peak_concurrent_players,
@@ -47,5 +48,6 @@ __all__ = [
     "get_server_timeline",
     "get_total_deaths",
     "get_daily_playtime",
-    "get_weekday_playtime",  # Add this line
+    "get_hourly_playtime",  # Add this line
+    "get_weekday_playtime",
 ]

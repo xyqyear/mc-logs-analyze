@@ -161,8 +161,12 @@ def get_weekday_playtime(dfs: dict[str, pd.DataFrame]) -> list[dict]:
     sessions_df = dfs["sessions"]
 
     # Convert timestamps to pandas timestamps in UTC+8
-    sessions_df["start_time"] = pd.to_datetime(sessions_df["join_timestamp"], unit="s", utc=True).dt.tz_convert("Asia/Shanghai")
-    sessions_df["end_time"] = sessions_df["start_time"] + pd.to_timedelta(sessions_df["play_time"], unit="s")
+    sessions_df["start_time"] = pd.to_datetime(
+        sessions_df["join_timestamp"], unit="s", utc=True
+    ).dt.tz_convert("Asia/Shanghai")
+    sessions_df["end_time"] = sessions_df["start_time"] + pd.to_timedelta(
+        sessions_df["play_time"], unit="s"
+    )
 
     # Initialize list to store daily segments
     weekday_segments = []
@@ -178,10 +182,9 @@ def get_weekday_playtime(dfs: dict[str, pd.DataFrame]) -> list[dict]:
             segment_duration = (segment_end - max(start, current)).total_seconds()
 
             if segment_duration > 0:
-                weekday_segments.append({
-                    "weekday": current.weekday(),
-                    "play_time": segment_duration
-                })
+                weekday_segments.append(
+                    {"weekday": current.weekday(), "play_time": segment_duration}
+                )
 
             current = next_day
 
@@ -194,30 +197,99 @@ def get_weekday_playtime(dfs: dict[str, pd.DataFrame]) -> list[dict]:
         # Create dict for weekday names
         weekday_names = {
             0: "Monday",
-            1: "Tuesday", 
+            1: "Tuesday",
             2: "Wednesday",
             3: "Thursday",
             4: "Friday",
             5: "Saturday",
-            6: "Sunday"
+            6: "Sunday",
         }
 
         # Convert to list of dicts with weekday names
         result = [
             {
                 "weekday": weekday_names[row["weekday"]],
-                "play_hours": round(row["play_hours"], 1)
+                "play_hours": round(row["play_hours"], 1),
             }
             for _, row in weekday_play.iterrows()
         ]
 
         # Sort by weekday order
-        result = sorted(result, key=lambda x: list(weekday_names.values()).index(x["weekday"]))
+        result = sorted(
+            result, key=lambda x: list(weekday_names.values()).index(x["weekday"])
+        )
     else:
         # Handle case with no valid sessions
         result = [
             {"weekday": day, "play_hours": 0.0}
-            for day in ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+            for day in [
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday",
+                "Saturday",
+                "Sunday",
+            ]
         ]
+
+    return result
+
+
+def get_hourly_playtime(dfs: dict[str, pd.DataFrame]) -> list[dict]:
+    """Calculate total playtime for each hour of the day in UTC+8"""
+    sessions_df = dfs["sessions"]
+
+    # Convert timestamps to pandas timestamps in UTC+8
+    sessions_df["start_time"] = pd.to_datetime(
+        sessions_df["join_timestamp"], unit="s", utc=True
+    ).dt.tz_convert("Asia/Shanghai")
+    sessions_df["end_time"] = sessions_df["start_time"] + pd.to_timedelta(
+        sessions_df["play_time"], unit="s"
+    )
+
+    # Initialize list to store hourly segments
+    hourly_segments = []
+
+    for _, session in sessions_df.iterrows():
+        start = session["start_time"]
+        end = session["end_time"]
+        current = start.replace(minute=0, second=0)  # Round down to hour
+
+        while current < end:
+            next_hour = current + pd.Timedelta(hours=1)
+            segment_end = min(end, next_hour)
+            segment_duration = (segment_end - max(start, current)).total_seconds()
+
+            if segment_duration > 0:
+                hourly_segments.append(
+                    {"hour": current.hour, "play_time": segment_duration}
+                )
+
+            current = next_hour
+
+    # Convert segments to DataFrame and group by hour
+    segments_df = pd.DataFrame(hourly_segments)
+    if len(segments_df) > 0:
+        hourly_play = segments_df.groupby("hour")["play_time"].sum().reset_index()
+        hourly_play["play_hours"] = hourly_play["play_time"] / 3600
+
+        # Create complete hour index
+        all_hours = pd.DataFrame({"hour": range(24)})
+        hourly_hours = all_hours.merge(
+            hourly_play[["hour", "play_hours"]], on="hour", how="left"
+        ).fillna(0)
+    else:
+        # Handle case with no valid sessions
+        hourly_hours = pd.DataFrame({"hour": range(24), "play_hours": [0.0] * 24})
+
+    # Convert to list of dicts with 24-hour format time strings
+    result = [
+        {
+            "hour": f"{int(row['hour']):02d}:00",
+            "play_hours": round(row["play_hours"], 1),
+        }
+        for _, row in hourly_hours.iterrows()
+    ]
 
     return result

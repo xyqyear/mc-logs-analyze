@@ -7,6 +7,7 @@ from stats import (
     get_dangerous_server_ranking,
     get_death_ranking,
     get_death_rate_ranking,
+    get_hourly_playtime,  # Add this line
     get_peak_concurrent_players,
     get_playtime_ranking,
     get_pvp_kill_ranking,
@@ -161,6 +162,12 @@ def main():
     print("\nPlaytime by Day of Week:")
     for day in weekday_playtime:
         print(f"{day['weekday']}: {day['play_hours']} hours")
+
+    # Generate hourly playtime statistics
+    hourly_playtime = get_hourly_playtime(dfs)
+    print("\nPlaytime by Hour of Day:")
+    for hour in hourly_playtime:
+        print(f"{hour['hour']}: {hour['play_hours']} hours")
 
 
 if __name__ == "__main__":
