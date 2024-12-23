@@ -43,3 +43,10 @@ def get_chat_rate_ranking(dfs: dict[str, pd.DataFrame]) -> list[dict]:
         }
         for _, row in chat_rate.iterrows()
     ]
+
+
+def get_total_messages(dfs: dict[str, pd.DataFrame]) -> dict:
+    """Calculate total messages sent across all players"""
+    messages_df = dfs["messages"]
+    total_count = len(messages_df)
+    return {"total_messages": int(total_count)}

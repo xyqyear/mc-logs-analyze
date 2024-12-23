@@ -2,6 +2,7 @@ from .overall.advancement import get_advancement_ranking, get_total_advancements
 from .overall.chat import (
     get_chat_ranking,
     get_chat_rate_ranking,
+    get_total_messages,  # Add this line
 )
 from .overall.deaths import (
     get_death_ranking,
@@ -31,6 +32,7 @@ __all__ = [
     "get_chat_rate_ranking",
     "get_server_chat_ranking",
     "get_server_chat_rate_ranking",
+    "get_total_messages",  # Add this line
     "get_pvp_kill_ranking",
     "get_advancement_ranking",
     "get_playtime_ranking",

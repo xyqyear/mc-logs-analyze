@@ -17,7 +17,9 @@ from stats import (
     get_total_advancements,
     get_total_deaths,
     get_total_playtime,
+    get_total_messages,  # Add this line
 )
+
 from stats.common import load_dataframes
 
 
@@ -142,6 +144,10 @@ def main():
         print(f"\n{stat['server_name']}:")
         print(f"Peak: {stat['peak_players']} players at {stat['peak_time']}")
         print("Players online:", ", ".join(stat["player_list"]))
+
+    # Calculate total messages sent
+    total_messages = get_total_messages(dfs)
+    print(f"\nTotal Messages Sent: {total_messages['total_messages']}")
 
 
 if __name__ == "__main__":
