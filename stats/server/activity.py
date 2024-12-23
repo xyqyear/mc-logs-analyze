@@ -72,13 +72,15 @@ def get_server_timeline(
     """Get timeline of server creations, excluding vanilla and gtnh"""
     servers_df = dfs["servers"]
 
-    # Filter out vanilla and gtnh servers
-    filtered_servers = servers_df[~servers_df["server_name"].isin(exclude)]
-
     # Convert timestamp to datetime with UTC+8
-    timeline = filtered_servers.copy()
+    timeline = servers_df.copy()
+
     timeline["created_time"] = pd.to_datetime(timeline["created_timestamp"], unit="s")
     timeline["created_time"] = timeline["created_time"] + pd.Timedelta(hours=8)
+
+    # Closed time
+    timeline["closed_time"] = pd.to_datetime(timeline["closed_timestamp"], unit="s")
+    timeline["closed_time"] = timeline["closed_time"] + pd.Timedelta(hours=8)
 
     # Sort by creation time
     timeline = timeline.sort_values("created_time")
@@ -88,6 +90,7 @@ def get_server_timeline(
         {
             "server_name": row["server_name"],
             "created_at": row["created_time"].strftime("%Y-%m-%d %H:%M:%S"),
+            "closed_at": row["closed_time"].strftime("%Y-%m-%d %H:%M:%S"),
         }
         for _, row in timeline.iterrows()
     ]

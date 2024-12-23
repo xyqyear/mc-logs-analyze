@@ -105,7 +105,7 @@ def get_uuid(player: str, uuids: dict[str, str]) -> str:
 
 def process_server_logs(
     server: str, need_advancements: bool
-) -> tuple[list, list, list, list, float | None, list, list]:  # Updated return type
+) -> tuple[list, list, list, list, float | None, list, list]:
     """Returns lists of sessions, deaths, messages, server info, earliest_timestamp, advancements, and name mappings"""
     log_path = Path(f"files/{server}/filtered_logs.txt")
     if not log_path.exists():
@@ -118,6 +118,7 @@ def process_server_logs(
     current_sessions: dict[str, float] = {}
     player_uuids: dict[str, str] = {}
     earliest_timestamp: float | None = None
+    latest_timestamp: float | None = None  # Add this line
     name_mappings = []  # Track (uuid, name, timestamp) tuples
 
     # First pass - collect UUID mappings
@@ -171,6 +172,8 @@ def process_server_logs(
 
             if earliest_timestamp is None or timestamp < earliest_timestamp:
                 earliest_timestamp = timestamp
+            if latest_timestamp is None or timestamp > latest_timestamp:
+                latest_timestamp = timestamp  # Track latest timestamp
 
             if re.search(SERVER_DONE_PATTERN, line):
                 close_sessions(timestamp)
@@ -248,7 +251,7 @@ def process_server_logs(
         sessions,
         deaths,
         messages,
-        [(server, earliest_timestamp)],
+        [(server, earliest_timestamp, latest_timestamp)],  # Modified tuple
         earliest_timestamp,
         advancements,
         name_mappings,  # Add name mappings to return value
@@ -305,9 +308,9 @@ def main() -> None:
     )
     latest_names.to_csv("data/player_names.csv", index=False)
 
-    pd.DataFrame(all_servers, columns=["server_name", "created_timestamp"]).to_csv(
-        "data/servers.csv", index=False
-    )
+    pd.DataFrame(
+        all_servers, columns=["server_name", "created_timestamp", "closed_timestamp"]
+    ).to_csv("data/servers.csv", index=False)
     pd.DataFrame(
         all_sessions, columns=["server_name", "uuid", "join_timestamp", "play_time"]
     ).to_csv("data/sessions.csv", index=False)

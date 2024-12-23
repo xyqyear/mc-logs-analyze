@@ -33,7 +33,9 @@ def main():
     timeline = get_server_timeline(dfs)
     print("\nServer Timeline:")
     for server in timeline:
-        print(f"{server['server_name']}: created at {server['created_at']}")
+        print(
+            f"{server['server_name']}: created at {server['created_at']}, closed at {server['closed_at']}"
+        )
 
     # Generate total playtime
     total_play = get_total_playtime(dfs)
