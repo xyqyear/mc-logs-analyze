@@ -1,5 +1,7 @@
 from stats import get_chat_rate_ranking
+
 from .common import escape_latex
+
 
 def write_frame(dfs, frames_dir):
     """Generate the chat rate ranking frame"""
@@ -7,12 +9,12 @@ def write_frame(dfs, frames_dir):
     top_players = rankings[:10]  # Show top 10
 
     content = [
-        "\\begin{frame}{最吵闹的玩家}",
+        "\\begin{frame}{平均发消息排行}",
         "\\begin{center}",
         "\\begin{tabular}{lrr}",
         "\\toprule",
         "玩家 & 消息频率 & 总消息数 \\\\",
-        "\\midrule"
+        "\\midrule",
     ]
 
     for rank in top_players:
@@ -21,12 +23,7 @@ def write_frame(dfs, frames_dir):
             f"{player_name} & {rank['messages_per_hour']:.1f} 条/小时 & {rank['total_messages']:,} \\\\"
         )
 
-    content.extend([
-        "\\bottomrule",
-        "\\end{tabular}",
-        "\\end{center}",
-        "\\end{frame}"
-    ])
+    content.extend(["\\bottomrule", "\\end{tabular}", "\\end{center}", "\\end{frame}"])
 
     with open(f"{frames_dir}/chat_rate_ranking.tex", "w", encoding="utf-8") as f:
         f.write("\n".join(content))

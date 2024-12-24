@@ -4,7 +4,7 @@ from overall_frames import (
     active_players,
     advancement_ranking,
     chat_ranking,
-    chat_rate_ranking,  # Add this import
+    chat_rate_ranking,
     daily_playtime,
     dangerous_servers,
     death_ranking,
@@ -12,6 +12,7 @@ from overall_frames import (
     peak_players,
     playtime_ranking,
     pvp_ranking,
+    server_chat_ranking,  # Add this import
     server_players,
     server_playtime,
     time_distribution,
@@ -67,7 +68,8 @@ def main():
     advancement_ranking.write_frame(dfs, FRAMES_DIR)
     total_messages.write_frame(dfs, FRAMES_DIR)
     chat_ranking.write_frame(dfs, FRAMES_DIR)
-    chat_rate_ranking.write_frame(dfs, FRAMES_DIR)  # Add this line
+    chat_rate_ranking.write_frame(dfs, FRAMES_DIR)
+    server_chat_ranking.write_frame(dfs, FRAMES_DIR)  # Add this line
 
 
 if __name__ == "__main__":
