@@ -4,6 +4,8 @@ import pandas as pd
 
 from stats import get_daily_playtime
 
+FONT_SIZE = 20
+
 
 def create_figure(dfs, figures_dir):
     """Create daily playtime heatmap"""
@@ -47,17 +49,17 @@ def create_figure(dfs, figures_dir):
     )
 
     # Create figure
-    plt.figure(figsize=(15, 4))
-    plt.rcParams.update({"font.size": 16})  # Increase base font size
+    plt.figure(figsize=(17, 4))
+    plt.rcParams.update({"font.size": FONT_SIZE})  # Increase base font size
 
     # Create heatmap
     im = plt.imshow(heatmap_data.T, cmap="YlOrRd", aspect="auto")
     cbar = plt.colorbar(im, label="游玩时长（小时/天）")
-    cbar.ax.tick_params(labelsize=16)  # Colorbar tick size
+    cbar.ax.tick_params(labelsize=FONT_SIZE)  # Colorbar tick size
 
     # Configure axes with larger fonts
     weekday_names = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"]
-    plt.yticks(range(7), weekday_names, fontsize=16)
+    plt.yticks(range(7), weekday_names, fontsize=FONT_SIZE)
 
     # Set x-axis ticks at month boundaries
     month_positions = [pos for pos, _ in month_boundaries]
@@ -75,11 +77,11 @@ def create_figure(dfs, figures_dir):
         "11月",
         "12月",
     ][: len(month_boundaries)]
-    plt.xticks(month_positions, month_labels, rotation=45, fontsize=16)
+    plt.xticks(month_positions, month_labels, rotation=45, fontsize=FONT_SIZE)
 
-    plt.xlabel("月份", fontsize=18)
-    plt.ylabel("星期", fontsize=18)
-    plt.title("每周游玩时间热力图", pad=20, fontsize=20)
+    plt.xlabel("月份", fontsize=FONT_SIZE)
+    plt.ylabel("星期", fontsize=FONT_SIZE)
+    plt.title("每日游玩时间热力图", pad=20, fontsize=FONT_SIZE)
 
     # Add grid
     plt.grid(True, color="gray", linestyle=":", alpha=0.3)
