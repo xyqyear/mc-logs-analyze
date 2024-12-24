@@ -13,7 +13,7 @@ from overall_frames import (
     playtime_ranking,
     pvp_ranking,
     server_chat_ranking,
-    server_chat_rate_ranking,  # Add this import
+    server_chat_rate_ranking,
     server_players,
     server_playtime,
     time_distribution,
@@ -71,7 +71,7 @@ def main():
     chat_ranking.write_frame(dfs, FRAMES_DIR)
     chat_rate_ranking.write_frame(dfs, FRAMES_DIR)
     server_chat_ranking.write_frame(dfs, FRAMES_DIR)
-    server_chat_rate_ranking.write_frame(dfs, FRAMES_DIR)  # Add this line
+    server_chat_rate_ranking.write_frame(dfs, FRAMES_DIR)
 
 
 if __name__ == "__main__":

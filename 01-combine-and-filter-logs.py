@@ -4,7 +4,7 @@ import re
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
-from typing import Iterator, TypeVar
+from typing import Iterator
 
 from tqdm import tqdm
 
@@ -19,8 +19,6 @@ PLAYER_UUID_MAPPING_PATTERN_ALT = (
 )
 
 player_names: set[str] = set()
-
-T = TypeVar("T")
 
 
 def read_gzipped_file(file: Path) -> Iterator[str]:

@@ -127,7 +127,3 @@ def get_server_player_list(dfs: dict[str, pd.DataFrame]) -> list[dict]:
     result.sort(key=lambda x: x["player_count"], reverse=True)
 
     return result
-
-
-# Remove or comment out the old function
-# def get_server_player_counts...

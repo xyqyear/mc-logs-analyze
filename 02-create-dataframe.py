@@ -13,14 +13,13 @@ TIME_PATTERN = r"^(\d{4}-\d{2}-\d{2})-\d\.log\.gz: \[[^\[]*(\d{2}:\d{2}:\d{2}).*
 SERVER_DONE_PATTERN = r": Done \(\d.*help"
 PLAYER_JOIN_PATTERN = r"(\S+?)\[\S+\] logged in with entity id \d+ at"
 PLAYER_QUIT_PATTERN = r"(\S+?) lost connection: (.*)"
-DEATH_MESSAGE_BASE = r"\]: (\S+) (.*)$"  # Updated death pattern
 PLAYER_CHAT_PATTERN = r": (\[Not Secure\] )?<(\S+)> (.*)"
 
 PLAYER_ADVANCEMENT_PATTERN = r"(\S+) has made the advancement \[(.*)\]"
 PLAYER_ADVANCEMENT_PATTERN_ALT = r"(\S+) has just earned the achievement \[(.*)\]"
 
-# Add exclude patterns
-EXCLUDE_PATTERNS = [
+DEATH_MESSAGE_BASE = r"\]: (\S+) (.*)$"
+DEATH_EXCLUDE_PATTERNS = [
     r"made the advancement",
     r"has reached",
     r"joined the game",
@@ -37,9 +36,8 @@ EXCLUDE_PATTERNS = [
     r"is now AFK",
     r"is no longer AFK",
 ]
-EXCLUDE_PATTERN = "|".join(EXCLUDE_PATTERNS)
+DEATH_EXCLUDE_PATTERN = "|".join(DEATH_EXCLUDE_PATTERNS)
 
-# Replace UUID extraction patterns with proper ones
 PLAYER_UUID_MAPPING_PATTERN = (
     r"UUID of player (\S+) is (\S{8}-\S{4}-\S{4}-\S{4}-\S{12})"
 )
@@ -56,7 +54,6 @@ def parse_timestamp(timestr: str) -> float:
         dt = datetime.strptime(timestr, "%Y-%m-%d %H:%M:%S %z")
     else:
         dt = datetime.strptime(timestr, "%Y-%m-%d %H:%M:%S")
-        # Use Asia/Shanghai timezone
         dt = dt.replace(tzinfo=ZoneInfo("Asia/Shanghai"))
     return dt.timestamp()
 
@@ -118,8 +115,8 @@ def process_server_logs(
     current_sessions: dict[str, float] = {}
     player_uuids: dict[str, str] = {}
     earliest_timestamp: float | None = None
-    latest_timestamp: float | None = None  # Add this line
-    name_mappings = []  # Track (uuid, name, timestamp) tuples
+    latest_timestamp: float | None = None
+    name_mappings = []
 
     # First pass - collect UUID mappings
     with open(log_path, "r", encoding="utf-8") as f:
@@ -230,7 +227,7 @@ def process_server_logs(
             elif death_match := re.search(DEATH_MESSAGE_BASE, line):
                 player, message = death_match.groups()
                 if player in current_sessions and not re.search(
-                    EXCLUDE_PATTERN, message
+                    DEATH_EXCLUDE_PATTERN, message
                 ):
                     killer_uuid = None
                     if killer_match := re.search(PLAYER_KILLED_BY_PATTERN, message):
@@ -251,10 +248,10 @@ def process_server_logs(
         sessions,
         deaths,
         messages,
-        [(server, earliest_timestamp, latest_timestamp)],  # Modified tuple
+        [(server, earliest_timestamp, latest_timestamp)],
         earliest_timestamp,
         advancements,
-        name_mappings,  # Add name mappings to return value
+        name_mappings,
     )
 
 

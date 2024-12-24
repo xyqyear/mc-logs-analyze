@@ -3,11 +3,11 @@ from stats import (
     get_advancement_ranking,
     get_chat_ranking,
     get_chat_rate_ranking,
-    get_daily_playtime,  # Add this line
+    get_daily_playtime,
     get_dangerous_server_ranking,
     get_death_ranking,
     get_death_rate_ranking,
-    get_hourly_playtime,  # Add this line
+    get_hourly_playtime,
     get_peak_concurrent_players,
     get_playtime_ranking,
     get_pvp_kill_ranking,
@@ -19,9 +19,9 @@ from stats import (
     get_server_variety_ranking,
     get_total_advancements,
     get_total_deaths,
-    get_total_messages,  # Add this line
+    get_total_messages,
     get_total_playtime,
-    get_weekday_playtime,  # Add this line
+    get_weekday_playtime,
 )
 from stats.common import load_dataframes
 
@@ -175,7 +175,7 @@ def main():
 
     # Generate server playtime rankings
     server_playtime = get_server_playtime_ranking(dfs)
-    print("\n每个服务器总游玩时长排名:")
+    print("\nServer Playtime Rankings:")
     for rank in server_playtime:
         print(
             f"{rank['server_name']}: {rank['play_hours']} hours "
