@@ -12,7 +12,7 @@ def write_frame(dfs, frames_dir):
         "\\begin{center}",
         "\\begin{tabular}{lrr}",
         "\\toprule",
-        "服务器 & 聊天频率 & 总发言数 \\\\",
+        "服务器 & 聊天频率 & 总聊天数 \\\\",
         "\\midrule",
     ]
 
