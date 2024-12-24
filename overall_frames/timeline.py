@@ -18,12 +18,15 @@ def create_figure(dfs, figures_dir):
     for server in timeline:
         server["created_datetime"] = datetime.fromisoformat(server["created_at"])
         server["closed_datetime"] = datetime.fromisoformat(server["closed_at"])
+        # Store special dates for certain servers
         if server["server_name"].lower() == "vanilla":
-            server["display_name"] = f"{server['server_name']} (2020-10-01)"
+            server["display_date"] = "2020-10-01"
         elif server["server_name"].lower() == "gtnh":
-            server["display_name"] = f"{server['server_name']} (???)"
+            server["display_date"] = "???"
+        elif server["server_name"].lower() == "creative":
+            server["display_date"] = "2022-11-16"
         else:
-            server["display_name"] = server["server_name"]
+            server["display_date"] = server["created_datetime"].strftime("%m-%d")
 
     timeline.sort(key=lambda x: x["created_datetime"])
 
@@ -39,7 +42,7 @@ def create_figure(dfs, figures_dir):
             y=y_pos,
             xmin=server["created_datetime"],
             xmax=server["closed_datetime"],
-            linewidth=8,
+            linewidth=4,
             color=colors[idx],
         )
 
@@ -51,9 +54,10 @@ def create_figure(dfs, figures_dir):
         plt.text(
             server["created_datetime"],
             y_pos + 0.1,
-            f"{server['display_name']}\n{server['created_datetime'].strftime('%m-%d')}",
+            f"{server['server_name']}\n{server['display_date']}",  # Use display_date here
             verticalalignment="bottom",
-            fontsize=24,
+            horizontalalignment="right",
+            fontsize=20,
             linespacing=0.8,
         )
 
@@ -63,7 +67,7 @@ def create_figure(dfs, figures_dir):
                 y_pos + 0.1,
                 f"{server['closed_datetime'].strftime('%m-%d')}",
                 verticalalignment="bottom",
-                fontsize=24,
+                fontsize=20,
                 horizontalalignment="left",
             )
 
