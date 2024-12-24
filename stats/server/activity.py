@@ -66,20 +66,29 @@ def get_peak_concurrent_players(dfs: dict[str, pd.DataFrame]) -> list[dict]:
     return results
 
 
-def get_server_timeline(
-    dfs: dict[str, pd.DataFrame], exclude=["vanilla", "gtnh"]
-) -> list[dict]:
-    """Get timeline of server creations, excluding vanilla and gtnh"""
-    servers_df = dfs["servers"]
+def get_server_timeline(dfs: dict[str, pd.DataFrame]) -> list[dict]:
+    """Get timeline of server creations based on actual player activity"""
+    sessions_df = dfs["sessions"]
 
-    # Convert timestamp to datetime with UTC+8
-    timeline = servers_df.copy()
+    # Group by server and find first join
+    first_joins = sessions_df.groupby("server_name")["join_timestamp"].min()
 
-    timeline["created_time"] = pd.to_datetime(timeline["created_timestamp"], unit="s")
+    # Calculate last quit time for each server
+    last_quits = sessions_df.groupby("server_name").apply(
+        lambda group: (group["join_timestamp"] + group["play_time"]).max()
+    )
+
+    # Create timeline dataframe
+    timeline = pd.DataFrame(
+        {
+            "server_name": first_joins.index,
+            "created_time": pd.to_datetime(first_joins, unit="s"),
+            "closed_time": pd.to_datetime(last_quits, unit="s"),
+        }
+    )
+
+    # Convert to UTC+8
     timeline["created_time"] = timeline["created_time"] + pd.Timedelta(hours=8)
-
-    # Closed time
-    timeline["closed_time"] = pd.to_datetime(timeline["closed_timestamp"], unit="s")
     timeline["closed_time"] = timeline["closed_time"] + pd.Timedelta(hours=8)
 
     # Sort by creation time
