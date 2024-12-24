@@ -2,7 +2,7 @@ import os
 
 from overall_frames import (
     active_players,
-    advancement_ranking,  # Add this import
+    advancement_ranking,
     daily_playtime,
     dangerous_servers,
     death_ranking,
@@ -16,6 +16,7 @@ from overall_frames import (
     timeline,
     total_advancements,
     total_deaths,
+    total_messages,  # Add this import
     total_playtime,
     variety_ranking,
 )
@@ -61,7 +62,8 @@ def main():
     dangerous_servers.write_frame(dfs, FRAMES_DIR)
     pvp_ranking.write_frame(dfs, FRAMES_DIR)
     total_advancements.write_frame(dfs, FRAMES_DIR)
-    advancement_ranking.write_frame(dfs, FRAMES_DIR)  # Add this line
+    advancement_ranking.write_frame(dfs, FRAMES_DIR)
+    total_messages.write_frame(dfs, FRAMES_DIR)  # Add this line
 
 
 if __name__ == "__main__":
