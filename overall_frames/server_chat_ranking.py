@@ -8,7 +8,7 @@ def write_frame(dfs, frames_dir):
     rankings = get_server_chat_ranking(dfs)
 
     content = [
-        "\\begin{frame}{每个服务器消息数排行}",
+        "\\begin{frame}{每个服务器聊天数排行}",
         "\\begin{center}",
         "\\begin{tabular}{lr}",
         "\\toprule",

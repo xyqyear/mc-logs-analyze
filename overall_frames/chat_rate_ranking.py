@@ -9,11 +9,11 @@ def write_frame(dfs, frames_dir):
     top_players = rankings[:10]  # Show top 10
 
     content = [
-        "\\begin{frame}{平均发消息排行}",
+        "\\begin{frame}{聊天频率排行}",
         "\\begin{center}",
         "\\begin{tabular}{lrr}",
         "\\toprule",
-        "玩家 & 消息频率 & 总消息数 \\\\",
+        "玩家 & 聊天频率 & 总发言数 \\\\",
         "\\midrule",
     ]
 

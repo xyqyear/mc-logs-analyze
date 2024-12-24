@@ -9,7 +9,7 @@ def write_frame(dfs, frames_dir):
     top_players = rankings[:10]  # Show top 10
 
     content = [
-        "\\begin{frame}{发消息排行}",
+        "\\begin{frame}{聊天排行}",
         "\\begin{center}",
         "\\begin{tabular}{lr}",
         "\\toprule",
